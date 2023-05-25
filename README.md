@@ -4,7 +4,7 @@
 Unearth new literary treasures with our Book Search Engine. Whether you're in need of a new novel to dive into or researching material for a project, our search engine will assist in finding the perfect book to match your search terms. The API generates the top ten results for any book or keyword you type in, offering a wealth of book recommendations at your fingertips.
 
 ## Usage
-Embark on your unique reading journey with our platform. To get started, simply login or sign up using the provided link. Once you've accessed your account, you can search for books by entering keywords or titles into the search bar. Discover a book that piques your interest? Click the 'save' button to add it to your personal collection found in the 'Saved Books' section. See the magic happen on our App homepage.
+Embark on your unique reading journey with our platform. To get started, simply login or sign up using the provided link. Once you've accessed your account, you can search for books by entering keywords or titles into the search bar. Discover a book that piques your interest? Click the 'save' button to add it to your personal collection found in the 'Saved Books' section. See the magic happen on our App homepage. ![App homepage](assets/myImage.jpg)
 
 ## Setup
 Setting up the application locally involves a few steps:
