@@ -1,47 +1,43 @@
-// see SignupForm.js for comments
 import React, { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
+import { useMutation } from '@apollo/client';
+import { LOGIN_USER } from '../utils/mutations';
 
-import { loginUser } from '../utils/API';
 import Auth from '../utils/auth';
 
-const LoginForm = () => {
-  const [userFormData, setUserFormData] = useState({ email: '', password: '' });
-  const [validated] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+const UserLoginForm = () => {
+  const [userData, setUserData] = useState({ email: '', password: '' });
+  const [formValidated] = useState(false);
+  const [displayAlert, setDisplayAlert] = useState(false);
 
-  const handleInputChange = (event) => {
+  const [performLogin, { error, response }] = useMutation(LOGIN_USER);
+
+  const handleUserInput = (event) => {
     const { name, value } = event.target;
-    setUserFormData({ ...userFormData, [name]: value });
+    setUserData({ ...userData, [name]: value });
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleSubmission = async (event) => {
     event.preventDefault();
 
-    // check if form has everything (as per react-bootstrap docs)
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
+    const formElement = event.currentTarget;
+    if (formElement.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
 
     try {
-      const response = await loginUser(userFormData);
+      const { response } = await performLogin({
+        variables: { ...userData },
+      });
 
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const { token, user } = await response.json();
-      console.log(user);
-      Auth.login(token);
+      Auth.login(response.login.token);
     } catch (err) {
       console.error(err);
-      setShowAlert(true);
+      setDisplayAlert(true);
     }
 
-    setUserFormData({
-      username: '',
+    setUserData({
       email: '',
       password: '',
     });
@@ -49,9 +45,9 @@ const LoginForm = () => {
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-          Something went wrong with your login credentials!
+      <Form noValidate validated={formValidated} onSubmit={handleSubmission}>
+        <Alert dismissible onClose={() => setDisplayAlert(false)} show={displayAlert} variant='danger'>
+          There was an issue with your login details!
         </Alert>
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='email'>Email</Form.Label>
@@ -59,8 +55,8 @@ const LoginForm = () => {
             type='text'
             placeholder='Your email'
             name='email'
-            onChange={handleInputChange}
-            value={userFormData.email}
+            onChange={handleUserInput}
+            value={userData.email}
             required
           />
           <Form.Control.Feedback type='invalid'>Email is required!</Form.Control.Feedback>
@@ -72,14 +68,14 @@ const LoginForm = () => {
             type='password'
             placeholder='Your password'
             name='password'
-            onChange={handleInputChange}
-            value={userFormData.password}
+            onChange={handleUserInput}
+            value={userData.password}
             required
           />
           <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
         </Form.Group>
         <Button
-          disabled={!(userFormData.email && userFormData.password)}
+          disabled={!(userData.email && userData.password)}
           type='submit'
           variant='success'>
           Submit
@@ -89,4 +85,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default UserLoginForm;
